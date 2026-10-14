@@ -5,9 +5,9 @@
 - Name: JejakHijau (Green Footprint)
 - Build shape: Browser-local tool (with content-led hero)
 - Shape confirmation: Confirmed
-- Current KDBM Lite stage: Build
-- Current phase: Core flow complete and verified
-- Current work card: `work-cards/06-wow-polish-and-review.md`
+- Current KDBM Lite stage: Ship
+- Current phase: Proof captured — Vercel deploy pending learner login
+- Current work card: `work-cards/07-github-vercel-proof.md`
 
 ## Completed work cards
 
@@ -18,15 +18,23 @@
 - [x] 04 Update and Delete Day
 - [x] 05 localStorage Save + Refresh
 - [x] 06 Wow Polish and Review (core verified in headless browser)
+- [x] README.md with demo script
+- [x] Local proof screenshots (`proof/jejakhijau-desktop.png`, `proof/jejakhijau-mobile.png`)
+- [x] GitHub repo pushed: https://github.com/Ayushgupta0511/jejakhijau
 
 ## In progress
 
-- [ ] README.md with demo script (build-step 07 pending)
-- [ ] GitHub + Vercel proof (build-step 07 pending)
+- [ ] Vercel deploy (blocked on interactive Vercel login; fallback proof captured)
 
 ## Blockers
 
-- None.
+- Vercel deploy requires interactive login (browser auth) which the agent cannot complete. Fallback proof captured; learner can import the GitHub repo at vercel.com.
+
+## Proof used
+
+- Repository: https://github.com/Ayushgupta0511/jejakhijau
+- Local proof: desktop + mobile screenshots in `proof/`
+- Vercel: pending learner login (static site; `vercel.json` added)
 
 ## Decisions made
 
@@ -68,4 +76,4 @@
 
 ## Next instruction for AI
 
-Core flow is verified. Pending learner check. Then: write `README.md` (problem, solution, features, how to run, 60-second demo script), then publish to GitHub + Vercel or capture fallback proof. Do not expand scope.
+Both build stops are complete and the repo is pushed. To finish Ship: run `vercel login`, then `npx vercel --prod` in this folder (or import the GitHub repo at vercel.com — it auto-detects a static site), open the live URL, re-test the core flow, and record the live URL here. Do not expand scope.

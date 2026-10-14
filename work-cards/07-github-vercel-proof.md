@@ -51,4 +51,4 @@ If anything fails, reply `fix` and paste the error or describe what you see.
 If publishing fails and no fallback proof is captured, stop and report.
 
 ## Status
-Not started
+Pushed to GitHub. Vercel deploy pending learner login.
