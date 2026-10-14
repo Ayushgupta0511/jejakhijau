@@ -157,7 +157,9 @@ main { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; p
   text-decoration: underline;
   cursor: pointer;
   padding: 6px 4px;
-  min-height: 32px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 .link-btn:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 2px; }
 
@@ -360,7 +362,7 @@ input[type="range"]:focus-visible { outline: 3px solid var(--accent-2); outline-
 .icon-btn {
   font: inherit; font-size: .8rem; font-weight: 600;
   background: transparent; border: 1px solid var(--border); color: var(--text);
-  border-radius: 999px; padding: 7px 12px; min-height: 36px; cursor: pointer;
+  border-radius: 999px; padding: 7px 12px; min-height: 44px; cursor: pointer;
   transition: border-color var(--t-fast), color var(--t-fast);
 }
 .icon-btn:hover { border-color: var(--accent); }
