@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="JejakHijau — a simple daily carbon-footprint tracker for Malaysian university students. Runs fully offline in your browser." />
+  <title>JejakHijau — Green Footprint</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-a" aria-hidden="true"></div>
+  <div class="bg-orb orb-b" aria-hidden="true"></div>
+
+  <header class="site-header glass">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">🌱</span>
+      <span class="brand-name">JejakHijau</span>
+    </a>
+    <div class="header-controls">
+      <button id="langToggle" class="chip-btn" type="button" aria-label="Switch language">BM</button>
+      <button id="themeToggle" class="chip-btn" type="button" aria-pressed="true" aria-label="Switch theme">
+        <span class="theme-icon" aria-hidden="true">🌙</span>
+        <span id="themeLabel">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <p class="eyebrow" data-i18n="estimateNote">All figures are approximate estimates, not official measurements.</p>
+      <h1 class="hero-title" data-i18n="heroTitle">JejakHijau</h1>
+      <p class="hero-pitch" data-i18n="heroPitch">Track your carbon footprint in 20 seconds a day — and grow a forest.</p>
+      <p class="hero-sub" data-i18n="heroSub">A simple, honest CO₂ tracker for Malaysian university students. Everything stays in your browser.</p>
+      <button id="startBtn" class="btn btn-primary" type="button" data-i18n="start">Start tracking</button>
+    </section>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- LOGGER -->
+    <section id="logger" class="panel glass" aria-labelledby="loggerTitle">
+      <div class="panel-head">
+        <h2 id="loggerTitle" data-i18n="loggerTitle">Log today</h2>
+        <p class="muted" data-i18n="loggerHelp">Tap one transport and one food, then set your hours. Estimates only.</p>
+        <p id="editingBanner" class="editing-banner" hidden>
+          <span data-i18n="editing">Editing a saved day</span>
+          <button id="cancelEditBtn" class="link-btn" type="button" data-i18n="cancelEdit">Cancel edit</button>
+        </p>
+      </div>
+
+      <div class="logger-group">
+        <h3 class="group-label" data-i18n="transportLabel">How did you travel?</h3>
+        <div id="transportGrid" class="tap-grid" role="radiogroup" aria-label="Transport"></div>
+      </div>
+
+      <div class="logger-group">
+        <h3 class="group-label" data-i18n="foodLabel">Main meal today?</h3>
+        <div id="foodGrid" class="tap-grid" role="radiogroup" aria-label="Food"></div>
+      </div>
+
+      <div class="logger-group">
+        <h3 class="group-label" data-i18n="energyLabel">Energy use today</h3>
+        <div class="slider-row">
+          <div class="slider-head">
+            <label for="aircondSlider" data-i18n="aircondLabel">Aircond</label>
+            <output id="aircondOut" for="aircondSlider">3 <span data-i18n="hours">h</span></output>
+          </div>
+          <input id="aircondSlider" type="range" min="0" max="12" step="1" value="3" aria-valuemin="0" aria-valuemax="12" aria-valuenow="3" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-head">
+            <label for="laptopSlider" data-i18n="laptopLabel">Laptop</label>
+            <output id="laptopOut" for="laptopSlider">4 <span data-i18n="hours">h</span></output>
+          </div>
+          <input id="laptopSlider" type="range" min="0" max="16" step="1" value="4" aria-valuemin="0" aria-valuemax="16" aria-valuenow="4" />
+        </div>
+      </div>
+
+      <div class="estimate-bar">
+        <div class="estimate-readout">
+          <span class="estimate-label" data-i18n="estimate">Estimated today</span>
+          <span id="liveEstimate" class="estimate-value">0.00 <span data-i18n="kg">kg CO₂e</span></span>
+        </div>
+        <button id="saveBtn" class="btn btn-primary" type="button" data-i18n="saveBtn">Save day</button>
+      </div>
+      <p class="muted tiny" data-i18n="estimateNote">All figures are approximate estimates, not official measurements.</p>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="panel glass" aria-labelledby="dashTitle">
+      <div class="panel-head"><h2 id="dashTitle" data-i18n="dashTitle">Your impact</h2></div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="todayLabel">Today</span>
+          <span id="statToday" class="stat-value">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="weekLabel">This week</span>
+          <span id="statWeek" class="stat-value">—</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label" data-i18n="streakLabel">Day streak</span>
+          <span id="statStreak" class="stat-value">0</span>
+        </div>
+      </div>
+      <div id="vsBox" class="vs-box" hidden>
+        <span id="vsChip" class="chip"></span>
+        <span id="vsText" class="vs-text"></span>
+      </div>
+      <p class="muted tiny">
+        <span data-i18n="avgLabel">Student avg</span>: <span id="avgValue">9.5</span>
+        <span data-i18n="kg">kg CO₂e</span>/day — <span data-i18n="estimateNote">estimate</span>.
+      </p>
+    </section>
+
+    <!-- FOREST -->
+    <section id="forest" class="panel glass" aria-labelledby="forestTitle">
+      <div class="panel-head"><h2 id="forestTitle" data-i18n="forestTitle">Your forest</h2></div>
+      <div class="forest-wrap">
+        <svg id="forestSvg" viewBox="0 0 600 260" role="img" aria-label="A forest that grows when your week is low-carbon" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <p id="forestCaption" class="forest-caption muted" data-i18n="forestEmpty">Log a few days to bring your forest to life.</p>
+    </section>
+
+    <!-- SUGGESTIONS -->
+    <section id="suggest" class="panel glass" aria-labelledby="suggestTitle">
+      <div class="panel-head"><h2 id="suggestTitle" data-i18n="suggestTitle">Smart swaps</h2></div>
+      <ul id="suggestList" class="suggest-list"></ul>
+      <p id="suggestEmpty" class="empty mini" data-i18n="suggestEmpty">Log a day to see swap suggestions.</p>
+    </section>
+
+    <!-- CHART -->
+    <section id="chart" class="panel glass" aria-labelledby="chartTitle">
+      <div class="panel-head"><h2 id="chartTitle" data-i18n="chartTitle">Last 7 days</h2></div>
+      <div class="canvas-wrap">
+        <canvas id="weekChart" width="600" height="240" role="img" aria-label="Bar chart of your carbon footprint over the last 7 days"></canvas>
+      </div>
+      <p id="chartEmpty" class="empty mini" data-i18n="chartEmpty">No data for the last 7 days yet.</p>
+    </section>
+
+    <!-- BADGES -->
+    <section id="badges" class="panel glass" aria-labelledby="badgesTitle">
+      <div class="panel-head"><h2 id="badgesTitle" data-i18n="badgesTitle">Achievements</h2></div>
+      <div id="badgeRow" class="badge-row"></div>
+    </section>
+
+    <!-- CHALLENGE -->
+    <section id="challenge" class="panel glass" aria-labelledby="challengeTitle">
+      <div class="panel-head"><h2 id="challengeTitle" data-i18n="challengeTitle">7-Day Low Carbon Challenge</h2></div>
+      <div class="challenge-body">
+        <div class="ring-wrap">
+          <svg id="ringSvg" viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+            <circle cx="60" cy="60" r="52" class="ring-track"></circle>
+            <circle id="ringProgress" cx="60" cy="60" r="52" class="ring-progress"></circle>
+          </svg>
+          <span id="ringLabel" class="ring-label">0/7</span>
+        </div>
+        <div class="challenge-info">
+          <p id="challengeStatus" class="muted" data-i18n="challengeStart">Start challenge</p>
+          <button id="challengeBtn" class="btn btn-secondary" type="button" data-i18n="challengeStart">Start challenge</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHARE -->
+    <section id="share" class="panel glass" aria-labelledby="shareTitle">
+      <div class="panel-head"><h2 id="shareTitle" data-i18n="shareBtn">Share my forest</h2></div>
+      <p class="muted" data-i18n="shareCaption">My weekly carbon footprint</p>
+      <button id="shareBtn" class="btn btn-primary" type="button" data-i18n="shareBtn">Share my forest</button>
+      <a id="shareLink" class="link-btn" download="jejakhijau-forest.png" hidden>PNG</a>
+    </section>
+
+    <!-- SAVED DAYS -->
+    <section id="saved" class="panel glass" aria-labelledby="savedTitle">
+      <div class="panel-head"><h2 id="savedTitle" data-i18n="savedDaysTitle">Saved days</h2></div>
+      <div id="savedList" class="saved-list"></div>
+      <div id="emptyState" class="empty-state">
+        <p class="empty-icon" aria-hidden="true">📭</p>
+        <h3 data-i18n="emptyTitle">No logs yet</h3>
+        <p class="muted" data-i18n="emptyBody">Start with one day. Tap a transport and a food above, then save.</p>
+      </div>
+    </section>
+
+    <!-- DATA TOOLS -->
+    <section id="tools" class="panel glass" aria-labelledby="toolsTitle">
+      <div class="panel-head"><h2 id="toolsTitle">Data</h2></div>
+      <div class="tool-row">
+        <button id="demoBtn" class="btn btn-secondary" type="button" data-i18n="demoBtn">Load demo data</button>
+        <button id="resetBtn" class="btn btn-ghost" type="button" data-i18n="resetBtn">Reset data</button>
+      </div>
+      <p class="muted tiny"><span data-i18n="savedOn">Saved</span>: <code>localStorage</code> → <code>jejakhijau.v1</code></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>JejakHijau — built with plain HTML, CSS &amp; JavaScript. No backend, no tracking, runs offline.</p>
+  </footer>
+
+  <canvas id="confettiCanvas" class="confetti" aria-hidden="true"></canvas>
+
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
